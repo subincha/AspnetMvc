@@ -1,0 +1,199 @@
+@model WebApplication.Models.EmployeeModels.PersonalInfo
+
+@{
+    ViewData["Title"] = "PersonalInfo";
+}
+@{
+    if (ViewBag.ViewToRender == "Admin")
+    {
+        Html.RenderPartial("_EmployeeLayout");
+    }
+    else
+    {
+        Html.RenderPartial("_EmployeeUserLayout");
+    }
+}
+<h2>PersonalInfo</h2>
+@*@TempData["EmployeeId"]*@
+<form asp-action="EditPersonalInfo">
+    <div class="form-horizontal">
+     
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (ViewBag.EmployeeId != null)
+        {
+            <input asp-for="EmployeeId" value="@ViewBag.EmployeeId" type="hidden" id="employeeId" />
+        }
+        else
+        {
+            <input asp-for="EmployeeId" type="hidden" id="employeeId" />
+        }
+        <div class="form-group">
+            <label asp-for="District" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="District" class="form-control" />
+                <span asp-validation-for="District" class="text-danger" />
+            </div>
+        </div>
+      
+        <div class="form-group">
+            <label asp-for="Tole" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Tole" class="form-control" />
+                <span asp-validation-for="Tole" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Zone" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Zone" class="form-control" />
+                <span asp-validation-for="Zone" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="IsMarried" id="isMarried"/>
+                    <label asp-for="IsMarried"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id="spouseName" style="display:none;">
+            <label asp-for="SpouseName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="SpouseName" class="form-control" value=""/>
+                <span asp-validation-for="SpouseName" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ImageUrl" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @if (Model != null && Model.ImageUrl != null)
+                {
+                    
+                    <div id="imageUrlDisplay">
+                        <img id="imageUrlShow" src="@Model.ImageUrl" style="height:90px; width:90px;" /><br />
+                        <input type="file" id="imageUrl" name="files" multiple style="display:none;"/>
+                        <button class="btn btn-default" id="imageUrlUpload" type="button"style="display:none;">Upload</button>
+                        <button class="btn btn-default" id="imageUrlRemove" type="button" >Remove</button>
+                        <div id="loadGifWork" style="display:none;"><img src="~/images/spiffygif_30x30.gif" /></div>
+                        <span asp-validation-for="ImageUrl" class="text-danger" />
+                        <div id="imageUrlSuccess"></div>
+
+                    </div>
+                }
+                else
+                {
+                    <div id="imageUrlDisplay">
+                        <img id="imageUrlShow" style="height:90px; width:90px;"/><br />
+                        <input type="file" id="imageUrl" name="files" multiple />
+                        <button class="btn btn-default" id="imageUrlUpload" type="button">Upload</button>
+                        <button class="btn btn-default" id="imageUrlRemove" type="button" style="display:none;">Remove</button>
+                        <div id="loadGifWork" style="display:none;"><img src="~/images/spiffygif_30x30.gif" /></div>
+                        <span asp-validation-for="ImageUrl" class="text-danger" />
+                        <div id="imageUrlSuccess"></div>
+                       
+                    </div>
+                }
+              
+               
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save and Continue" class="btn btn-default" id="submit"/>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $("#submit").click(function () {
+            //alert($("#employeeId").val());
+            if ($("#employeeId").val() == "") {
+                $("#employeeId").val("0");
+            }
+            // alert($("#employeeId").val());
+        });
+        $('#isMarried').change(function () {
+            if ($(this).prop('checked')) {
+                $("#spouseName").show();
+            }
+            else {
+                $("#spouseName").hide();
+            }
+        });
+
+        $(function () {
+            $("#imageUrlUpload").click(function () {
+                $("#loadGifWork").show();
+                $("#imageUrlUpload").hide();
+
+                @*$.post("@Url.Action("FileUpload")",
+                    {
+                        files: $("#imageUrl").get(0).files[0]
+                    },
+                    function (result) {
+                        $("#loadGifWork").hide();
+                        $("#imageUrlSuccess").html(result.status);
+
+                    });*@
+                var fileUpload = $("#imageUrl").get(0);
+                var files = fileUpload.files;
+                var data = new FormData();
+                for (var i = 0; i < files.length ; i++) {
+                    data.append(files[i].name, files[i]);
+                }
+                var empId = $("#employeeId").val();
+                //alert(empId);
+                $.ajax({
+                    type: "POST",
+                    url: "/Employee/FileUpload/" + empId,
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        $("#loadGifWork").hide();
+                        $("#imageUrlSuccess").html(result.status);
+                        $("#imageUrl").hide();
+                        $("#imageUrlRemove").show();
+                       // alert($("#employeeId").val());
+                        if (!result.value) {
+                            $("#imageUrlUpload").show();
+                        } else {
+                            //alert(result.url);
+                            $("#imageUrlShow").attr("src", result.url);
+                            $("#imageUrlShow").show();
+                        }
+                    },
+                    error: function () {
+                        $("#imageUrlSuccess").html("<p>There was error uploading files!</p>");
+                        $("#loadGifWork").hide();
+                        $("#imageUrlUpload").show();
+                       
+                    }
+                });
+            });
+        });
+        $("#imageUrlRemove").click(function () {
+            $("#loadGifWork").show();
+            $("#imageUrlRemove").hide();
+            // alert($("#imageUrlShow").attr('src'));
+            $.post("@Url.Action("FileRemove")",
+                {
+                    id: $("#employeeId").val()
+                },
+                function (result) {
+                    $("#loadGifWork").hide();
+                    $("#imageUrlShow").hide();
+                    $("#imageUrl").show();
+                    $("#imageUrlUpload").show();
+                    $("#imageUrlSuccess").html(result.status);
+                });
+        });
+    </script>
+}

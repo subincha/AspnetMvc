@@ -1,0 +1,86 @@
+@model WebApplication.Models.EmployeeModels.PersonalInfo
+
+@{
+    ViewData["Title"] = "PersonalInfo";
+}
+@{
+    Html.RenderPartial("_EmployeeCreateLayout");
+}
+<h2>PersonalInfo</h2>
+
+<form asp-action="PersonalInfo">
+    <div class="form-horizontal">
+     
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="EmployeeId" type="hidden" value="@TempData["EmployeeId"]" id="employeeId" />
+        <div class="form-group">
+            <label asp-for="District" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="District" class="form-control" />
+                <span asp-validation-for="District" class="text-danger" />
+            </div>
+        </div>
+      
+        <div class="form-group">
+            <label asp-for="Tole" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Tole" class="form-control" />
+                <span asp-validation-for="Tole" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Zone" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Zone" class="form-control" />
+                <span asp-validation-for="Zone" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="IsMarried" id="isMarried"/>
+                    <label asp-for="IsMarried"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id="spouseName" style="display:none;">
+            <label asp-for="SpouseName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="SpouseName" class="form-control" value=""/>
+                <span asp-validation-for="SpouseName" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" id="submit"/>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $("#submit").click(function () {
+            //alert($("#employeeId").val());
+            if ($("#employeeId").val() == "") {
+                $("#employeeId").val("0");
+            }
+            // alert($("#employeeId").val());
+        });
+        $('#isMarried').change(function () {
+            if ($(this).prop('checked')) {
+                $("#spouseName").show();
+            }
+            else {
+                $("#spouseName").hide();
+            }
+        });
+    </script>
+}

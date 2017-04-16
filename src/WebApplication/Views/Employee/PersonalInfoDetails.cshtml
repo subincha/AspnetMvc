@@ -1,0 +1,71 @@
+@model WebApplication.Models.EmployeeModels.PersonalInfo
+
+@{
+    ViewData["Title"] = "PersonalInfo";
+}
+@{
+        Html.RenderPartial("_EmployeeDetailsLayout");
+ }
+<h2>PersonalInfo</h2>
+
+
+    <div class="form-horizontal">
+     
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <div class="form-group">
+            <label asp-for="District" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+               @Html.DisplayFor(m => m.District)
+            </div>
+        </div>
+      
+        <div class="form-group">
+            <label asp-for="Tole" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.DisplayFor(m => m.Tole)
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Zone" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.DisplayFor(m => m.Zone)
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="IsMarried" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <div>
+                    @if (Model.IsMarried)
+                    {
+                        <p> Yes </p>
+                    }
+                    else
+                    {
+                        <p> No </p>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (Model.IsMarried)
+        {
+            <div class="form-group" id="spouseName" style="display:none;">
+                <label asp-for="SpouseName" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    @Html.DisplayFor(m => m.SpouseName)
+                </div>
+            </div>
+
+        }
+       
+       
+    </div>
+<div>
+    <a asp-action="EditPersonalInfo" asp-route-id="@Model.EmployeeId">Edit</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+   
+}

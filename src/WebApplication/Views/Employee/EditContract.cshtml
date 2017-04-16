@@ -1,0 +1,99 @@
+@model WebApplication.Models.EmployeeModels.Contract
+
+@{
+    ViewData["Title"] = "Edit Contract";
+}
+@{
+    if(ViewBag.ViewToRender == "Admin") {
+        Html.RenderPartial("_EmployeeLayout");
+    } else {
+        Html.RenderPartial("_EmployeeUserLayout");
+    }
+}
+<h2>Contract</h2>
+
+<form asp-action="EditContract">
+    <div class="form-horizontal">
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (ViewBag.EmployeeId != null)
+        {
+            <input asp-for="EmployeeId" value="@ViewBag.EmployeeId" type="hidden" id="employeeId" />
+        }
+        else
+        {
+            <input asp-for="EmployeeId" type="hidden" id="employeeId" />
+        }
+        
+        <div class="form-group">
+            <label asp-for="ContractType" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ContractType" class="form-control" />
+                <span asp-validation-for="ContractType" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ContractPeriod" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ContractPeriod" class="form-control" />
+                <span asp-validation-for="ContractPeriod" class="text-danger" />
+            </div>
+        </div>
+       
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div>
+                    <input asp-for="IsProbation" id="isProbation" />
+                    <label asp-for="IsProbation"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id="probationPeriod" style="display:none;">
+            <label asp-for="ProbationPeriod" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ProbationPeriod" class="form-control" value="0"/>
+                <span asp-validation-for="ProbationPeriod" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="JoinDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="JoinDate" class="form-control" />
+                <span asp-validation-for="JoinDate" class="text-danger" />
+            </div>
+        </div>
+       
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save and Continue" class="btn btn-default" id="submit"/>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+   
+         $('#isProbation').change(function () {
+             if ($(this).prop('checked')) {
+                 $("#probationPeriod").val("0");
+                $("#probationPeriod").show();
+            }
+            else {
+                 $("#probationPeriod").hide();
+                 $("#probationPeriod").val("0");
+               // alert($("#probationPeriod").val());
+            }
+         });
+         $("#submit").click(function () {
+             //alert($("#employeeId").val());
+             if ($("#employeeId").val() == "") {
+                 $("#employeeId").val("0");
+             }
+            // alert($("#employeeId").val());
+         });
+         
+</script>
+}

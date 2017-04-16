@@ -1,0 +1,9 @@
+<div class="nav nav-tabs">
+    <ul class="nav navbar-nav">
+      
+            <li><a asp-area="" asp-controller="Employee" asp-action="EmployeeDetails" asp-route-id="@TempData["EmployeeId"]">Employee Detail</a></li>
+            <li><a asp-area="" asp-controller="Employee" asp-action="ContractDetails" asp-route-id="@TempData["EmployeeId"]">Contract</a></li>
+            <li><a asp-area="" asp-controller="Employee" asp-action="EditPersonalInfo" asp-route-id="@TempData["EmployeeId"]">PersonalInfo</a></li>
+       
+    </ul>
+</div>

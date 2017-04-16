@@ -1,0 +1,148 @@
+@model WebApplication.Models.EmployeeViewModels.EmployeeDetailViewModel
+
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+@{
+    if(ViewBag.ViewToRender == "Admin") {
+        Html.RenderPartial("_EmployeeDetailsLayout");
+    } else {
+        Html.RenderPartial("_EmployeeUserLayout");
+    }
+}
+
+    <div class="form-horizontal">
+        <h2>Employee Detail</h2>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+
+            @*<input asp-for="EmployeeId" type="hidden" id="employeeId" />*@
+            <label asp-for="FirstName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.FirstName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MiddleName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+              @Html.DisplayFor(model => model.MiddleName)
+                
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.LastName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Email)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DepartmentId" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @foreach (var id in ViewBag.DepartmentId)
+                 {
+                    @if (Model.DepartmentId == id.Id)
+                     {
+                        <p>@id.DepartmentName</p>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="OfficeNumber" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.OfficeNumber)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ExtensionNumber" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+               @Html.DisplayFor(model => model.ExtensionNumber)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Status" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @if (@Model.Status == 0)
+            {
+                    <p>Inactive</p>
+                }
+                else
+                {
+                    <p>Active</p>
+                }
+
+            </div>
+        </div>
+
+        <h2>Job Detail</h2>
+        <hr />
+
+        <div class="form-group">
+            <label asp-for="Title" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+               @Html.DisplayFor(model => model.Title)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Level" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+               @Html.DisplayFor(model => model.Level)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Supervisor" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+               @Html.DisplayFor(model => model.Supervisor)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ExpectedJoinDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.ExpectedJoinDate)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="WorkSchedualId" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                @foreach (var id in ViewBag.WorkSchedualId)
+                {
+                    @if (Model.WorkSchedualId == id.Id)
+                    {
+                        <p>@id.WorkDays @id.WorkHours</p>
+                    }
+                }
+            </div>
+        </div>
+
+      
+    </div>
+
+
+
+    
+ @if (ViewBag.ViewToRender == "Admin")
+ {
+    <div>
+        <a asp-action="EditEmployee" asp-route-id="@Model.EmployeeId">Edit</a> 
+    </div>
+ }
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+}

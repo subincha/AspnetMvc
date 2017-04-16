@@ -1,0 +1,16 @@
+@model WebApplication.Models.EmployeeViewModels.EmployeeDetailViewModel
+
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+@{
+    if(ViewBag.ViewToRender == "Admin") {
+        Html.RenderPartial("_EmployeeDetailsLayout");
+    } else {
+        Html.RenderPartial("_EmployeeUserLayout");
+    }
+}
+
+<h2>@ViewBag.Error</h2>
+
+

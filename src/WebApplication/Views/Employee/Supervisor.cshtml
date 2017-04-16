@@ -1,0 +1,182 @@
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<WebApplication.Models.EmployeeViewModels.ShowImageUrlViewModel>
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Index";
+}
+@*@{
+    Html.RenderPartial("_EmployeeLayout");
+}*@
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
+<div>
+    <table style="margin:20px;">
+        <tr>
+            <td>
+                @if (ViewBag.SupervisorImage != null)
+                {
+                    <img src="@ViewBag.SupervisorImage" style="height:90px; width:90px;"/>
+                }
+                else
+                {
+                    <img src = "/images/user.png" style="height:90px; width:90px;"/>
+                }
+            </td>
+            <td>
+                <ul>
+                    <li>
+                        <label>Name: </label>
+                        <label>@ViewBag.SupervisorName</label>
+                    </li>
+                    <li>
+                        <label>Position: </label>
+                        <label>@ViewBag.SupervisorPosition</label>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a asp-action="EditPersonalInfo" asp-route-id="@TempData["EmployeeLoginId"]">Edit</a> |
+                <a asp-action="EmployeeDetails" asp-route-id="@TempData["EmployeeLoginId"]">Details</a>
+            </td>
+        </tr>
+    </table>
+    @*<a asp-action="CreateEmployeeAndJobDetail">Create Employee</a>*@
+</div>
+
+<table class="table" id="example">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.MiddleName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.OfficeNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.ExtensionNumber)
+            </th>
+            <th>
+               @Html.DisplayNameFor(model => model.Employee.DepartmentId)
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Status)*@
+                <label name="status" id="status">Status</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.ImageUrl == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        <img src="@item.ImageUrl" style="height:20px;width:20px" />
+                    }
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                </td>
+              
+                <td>
+                    @if (item.Employee.MiddleName == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Employee.MiddleName)
+                    }
+                    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.Email)
+                </td>
+                <td>
+                    @if (item.Employee.OfficeNumber == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Employee.OfficeNumber)
+                    }
+                </td>
+                <td>
+                    @if (item.Employee.ExtensionNumber == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Employee.ExtensionNumber)
+                    }
+                   
+                </td>
+                <td>
+                    @foreach (var id in ViewBag.DepartmentId)
+                    {
+                        @if (item.Employee.DepartmentId == id.Id)
+                        {
+                            <p>@id.DepartmentName</p>
+                        }
+                    }
+                    @*@ViewBag.DepartmentId*@
+                </td>
+                <td>
+                    @if (item.Employee.Status == 0)
+                    {
+                        <p>Inactive</p>
+                    }
+                    else
+                    {
+                        <p>Active</p>
+                    }
+
+                </td>
+                <td>
+                    <a asp-action="EditPersonalInfo" asp-route-id="@item.Employee.Id">Edit</a> |
+                    <a asp-action="EmployeeDetails" asp-route-id="@item.Employee.Id">Details</a> @*|
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+   <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
+<script>
+       $(document).ready(function () {
+           $('#example').dataTable({
+               "aoColumnDefs": [
+                   { 'bSortable': false, 'aTargets': [0, -1] }
+               ]
+           });
+       });
+
+</script>
+}

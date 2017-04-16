@@ -1,0 +1,283 @@
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<WebApplication.Models.EmployeeViewModels.ShowImageUrlViewModel>
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Index";
+}
+@*@{
+    Html.RenderPartial("_EmployeeLayout");
+}*@
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
+
+<div style="float:right">
+    <select id="exportAsOption">
+        <option selected value="ExportToCSV">Export As CSV</option>
+        <option value="ExportToExcel">Export As Excel</option>
+        <option value="ExportToPDF">Export As PDF</option>
+    </select>
+    <a class="btn btn-primary" id="exportToCSV" style="margin-top:10px;">Export</a>
+    <a class="btn btn-primary" style="margin-top:10px;" id="upload_btn">Upload CSV</a>
+    <input type="file" id="csv_upload" name="files" multiple style="display:none;" />
+    <button class="btn btn-default" id="csv_upload_btn" type="button" style="display:none;">Upload</button>
+    <div id="loadGifCsv" style="display:none;"><img src="~/images/spiffygif_30x30.gif" /></div>
+    <div id="uploadCsvSuccess"></div>
+</div>
+<div>
+    <table style="margin:20px;">
+        <tr>
+            <td>
+                @if (ViewBag.ImageUrl != null)
+                {
+                    <img src="@ViewBag.ImageUrl" style="height:90px; width:90px;"/>
+                }
+                else
+                {
+                    <img src="~/images/user.png" style="height:90px; width:90px"/>
+                }
+            </td>
+            <td>
+                <ul>
+                    <li>
+                        <label>Name: </label>
+                        <label>@UserManager.GetUserName(User) </label>
+                    </li>
+                    <li>
+                        <label>Position: </label>
+                        <label>Admin</label>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <a asp-action="CreateEmployeeAndJobDetail">Create Employee</a>
+</div>
+
+<table class="table" id="example">
+    <thead>
+        <tr>
+            <th>
+                <input type="checkbox" value="ALL" id="exportAll" />
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.MiddleName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.OfficeNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.ExtensionNumber)
+            </th>
+            <th>
+               @Html.DisplayNameFor(model => model.Employee.DepartmentId)
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Status)*@
+                <label name="status" id="status">Status</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" name="export[]" value="@item.Employee.Id" id="@item.Employee.Id" />
+                </td>
+                <td>
+                    @if (item.ImageUrl == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        <img src="@item.ImageUrl" style="height:20px;width:20px"/>
+                    }
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                </td>
+               
+                <td>
+                    @if (item.Employee.MiddleName == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Employee.MiddleName)
+                    }
+                    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.Email)
+                </td>
+                <td>
+                    @if (item.Employee.OfficeNumber == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Employee.OfficeNumber)
+                    }
+                </td>
+                <td>
+                    @if (item.Employee.ExtensionNumber == null)
+                    {
+                        <p>-</p>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Employee.ExtensionNumber)
+                    }
+                   
+                </td>
+                <td>
+                    @foreach (var id in ViewBag.DepartmentId)
+                    {
+                        @if (item.Employee.DepartmentId == id.Id)
+                        {
+                            <p>@id.DepartmentName</p>
+                        }
+                    }
+                    @*@ViewBag.DepartmentId*@
+                </td>
+                <td>
+                    @if (item.Employee.Status == 0)
+                    {
+                        <p>Inactive</p>
+                    }
+                    else
+                    {
+                        <p>Active</p>
+                    }
+
+                </td>
+                <td>
+                    @if (!item.IsRegistered)
+                    {
+                        <a asp-controller="Account" asp-action="Register">Register</a> <span>|</span>
+                    }
+                    <a asp-action="EditEmployee" asp-route-id="@item.Employee.Id">Edit</a> |
+                    <a asp-action="EmployeeDetails" asp-route-id="@item.Employee.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Employee.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
+   <script>
+       $(document).ready(function () {
+           $('#example').dataTable({
+               "aoColumnDefs": [
+                   { 'bSortable': false, 'aTargets': [0,1,-1] }
+               ]
+           });
+       });
+       $(function () {
+           $("#exportAll").click(function () {
+               var group = "input:checkbox[name='export[]']";
+               if ($(this).is(":checked") === true) {
+                   $(group).prop("checked", true);
+               } else {
+                   $(group).prop("checked", false);
+               }
+           });
+       });
+       $(function () {
+           $("input:checkbox").change(function () {
+              if ($('[name="export[]"]:checked').length != $('[name="export[]"]').length) {
+                    $("#exportAll").prop("checked", false);
+               } else {
+                    $("#exportAll").prop("checked", true);
+               }
+           });
+       });
+
+       $("#exportToCSV").click(function () {
+           var rows = [];
+           $('[name="export[]"]:checked').each(function () {
+               rows.push($(this).val());
+           });
+           if(rows.length < 1) {
+               alert("No items are selected to export");
+           } else {
+               $("#exportToCSV").prop("href", "Employee/" + $("#exportAsOption :selected").val() + "/" + rows);
+               //alert($("#exportToCSV").prop("href"));
+           }
+       });
+
+       $("#upload_btn").click(function () {
+           $(this).hide();
+           $("#csv_upload").show();
+           $("#csv_upload_btn").show();
+       });
+
+       $("#csv_upload_btn").click(function () {
+           $("#loadGifCsv").show;
+           $(this).hide();
+           $("#uploadCsvSuccess").hide();
+           var fileUpload = $("#csv_upload").get(0);
+           var files = fileUpload.files;
+           var data = new FormData();
+           for (var i = 0; i < files.length ; i++) {
+               data.append(files[i].name, files[i]);
+           }
+          
+           $.ajax({
+               type: "POST",
+               url: "/Employee/CSVFileUpload",
+               contentType: false,
+               processData: false,
+               data: data,
+               success: function (result) {
+                   $("#loadGifCsv").hide();
+                   //$("#uploadCsvSuccess").html(result.status);
+                  
+                   if (result.success) {
+                       if (alert(result.status)) { }
+                       else window.location.reload();
+                       //$("#upload_btn").show();
+                       //$("#csv_upload").hide();
+                       //$("#csv_upload_btn").hide();
+                   } else {
+                       $("#uploadCsvSuccess").html("<p>" + result.status + "</p>");
+                       $("#uploadCsvSuccess").show();
+                       $("#csv_upload").show();
+                       $("#csv_upload_btn").show();
+                   }
+               },
+               error: function () {
+                   $("#uploadCsvSuccess").html("<p>There was error uploading files!</p>");
+                   $("#uploadCsvSuccess").show();
+                   $("#loadGifCsv").hide();
+                   $("#csv_upload").show();
+                   $("#csv_upload_btn").show();
+
+               }
+           });
+       });
+
+    </script>
+}

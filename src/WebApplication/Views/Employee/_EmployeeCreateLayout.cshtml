@@ -1,0 +1,17 @@
+<div class="nav nav-tabs">
+    <ul class="nav navbar-nav">
+       
+        @if (@TempData["EmployeeId"] == null)
+        {
+            <li><a asp-area="" asp-controller="Employee" asp-action="CreateEmployeeAndJobDetail">Employee Detail</a></li>
+            <li  class="disabled"><a href="#">Contract</a></li>
+            <li  class="disabled"><a href="#">PersonalInfo</a></li>
+        }
+        else
+        {
+            <li><a asp-area="" asp-controller="Employee" asp-action="EditEmployee" asp-route-id="@TempData["EmployeeId"]">Employee Detail</a></li>
+            <li><a asp-area="" asp-controller="Employee" asp-action="EditContract" asp-route-id="@TempData["EmployeeId"]">Contract</a></li>
+            <li><a asp-area="" asp-controller="Employee" asp-action="EditPersonalInfo" asp-route-id="@TempData["EmployeeId"]">PersonalInfo</a></li>
+        }
+    </ul>
+</div>
